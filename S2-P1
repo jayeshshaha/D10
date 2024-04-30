@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using dotnetapp.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+
+namespace dotnetapp.Controllers
+{
+    [Route("[controller]")]
+    public class FeedbackController : Controller
+    {
+       
+        public FeedbackController()
+        {
+           
+        }
+        static List<Feedback> feedbacks = new List<Feedback>();
+
+         // 1 
+        public IActionResult Index()
+        {
+            //
+            return View(feedbacks);
+        }
+         
+        // 2
+        public IActionResult Create(){
+            return View();
+        }
+
+        // 3
+        [HttpPost]
+        public  IActionResult Create(Feedback feedback){
+            if(ModelState.IsValid){
+                feedbacks.Add(feedback);
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
+        // 4
+        public IActionResult Edit(int id){
+            var editFeedbackView = feedbacks.Find(i => i.Id == id);
+            //
+            return View(editFeedbackView);
+
+        }
+
+
+        // 5
+        [HttpPost]
+        public IActionResult Edit(Feedback feedback){
+            if(ModelState.IsValid){
+                foreach(var i in feedbacks){
+                    if(i.Id == feedback.Id){
+                        i.StudentName = feedback.StudentName;
+                        i.Course = feedback.Course;
+                        i.Feedbacks = feedback.Feedbacks;
+                        i.Rating = feedback.Rating;
+                        i.DateSubmitted = feedback.DateSubmitted;
+                    }
+                    return RedirectToAction("Index"); 
+                }
+            }
+            return View();
+        }
+
+        // 6
+        public IActionResult Delete(int id){
+            var deleteFeedbackView = feedbacks.Find(i => i.Id == id);
+            //
+            return View(deleteFeedbackView);
+        }
+
+       // 7
+       [HttpPost]
+       public IActionResult DeleteConfirmed(int id){
+        bool found = false;
+           foreach(var i in feedbacks){
+            if(i.Id == id){
+                found = true;
+                feedbacks.Remove(i);
+            }
+           }
+                return RedirectToAction("Index");    
+       }
+
+    }
+}
