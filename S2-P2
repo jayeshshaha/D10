@@ -1,0 +1,96 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using dotnetapp.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace dotnetapp.Controllers
+{
+    [Route("[controller]")]
+    public class AppointmentController : Controller
+    {
+        static List<Appointment> appointments = new List<Appointment>();
+
+        // 1 
+        public IActionResult Index()
+        {
+            return View(appointments);
+        }
+
+        // 2
+        public IActionResult Create(){
+            return  View();
+        }
+
+        // 3
+        [HttpPost]
+        public IActionResult Create(Appointment appointment){
+            if(ModelState.IsValid){
+                appointments.Add(appointment);
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
+        // 4
+        [HttpGet]
+        public IActionResult Edit(int appointmentID){
+        
+            var appointmentView = appointments.Find(i => i.AppointmentID == appointmentID);
+            if(appointmentView == null){
+                return NotFound();
+            }else{
+            return View(appointmentView);
+            }
+        }
+
+        // 5
+        [HttpPost]
+        public IActionResult Edit(Appointment updatedAppointment){
+            if(ModelState.IsValid){
+                foreach (var i in appointments){
+                if(i.AppointmentID == updatedAppointment.AppointmentID){
+                    i.PatientFirstName = updatedAppointment.PatientFirstName;
+                    i.PatientLastName =  updatedAppointment.PatientLastName;
+                    i.PatientPhoneNumber = updatedAppointment.PatientPhoneNumber;
+                    i.PatientEmail = updatedAppointment.PatientEmail;
+                    i.DoctorFirstName = updatedAppointment.DoctorFirstName;
+                    i.DoctorLastName = updatedAppointment.DoctorLastName;
+                    i.DoctorSpecialty = updatedAppointment.DoctorSpecialty;
+                    i.AppointmentDate = updatedAppointment.AppointmentDate;
+                    i.Reason = updatedAppointment.Reason;
+                    return RedirectToAction("Index");
+                }
+               }
+            }
+            return NotFound();
+        }
+
+        // 6
+        public IActionResult Delete(int id){
+            var deleteappointmentView = appointments.Find(i => i.AppointmentID == id);
+            return View(deleteappointmentView);
+        }
+
+        // 7
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int appointmentID){
+            foreach (var i in appointments)
+            {
+                if(i.AppointmentID == appointmentID){
+                    appointments.Remove(i);
+                    
+                }
+            }
+            return RedirectToAction("Index");
+        }
+        
+        
+      
+    }
+}
