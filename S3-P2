@@ -1,0 +1,51 @@
+1.
+@model List<Post>;
+
+<h2>All Posts</h2>
+<ul>
+    @foreach (var i in Model)
+    {
+        <li><a asp-action="Details" asp-route-id="@i.Id" >@i.Title</a></li>
+    }
+</ul>
+
+2.
+@model Post;
+<h2>Post Details</h2>
+<h4>Id: @Model.Id</h4>
+<hr>
+<div>
+    <h4>Title:         @Model.Title</h4>
+    <h4>Content:       @Model.Content</h4>
+    <h4>Author:        @Model.Author</h4>
+    <h4>PublishDate:   @Model.PublishDate</h4>
+</div>
+<div>
+    <a href="Post/Index">Back to Lists</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+</div>
+
+3.
+@model Post;
+<h2>Create Post</h2>
+<form method="post"> 
+    <input type="text" asp-for="Title">
+    <input type="text" asp-for="Content">
+    <input type="text" asp-for="Author">
+    <input type="date" asp-for="PublishDate">
+    <button type="submit">Submit</button>
+</form>
+<a href="Post/Index">Back to List</a>
+
+4.
+@model Post;
+<h2>Edit Post</h2>
+<form  method="post">
+    <input type="text" asp-for="Title">
+    <input type="text" asp-for="Content">
+    <input type="text" asp-for="Author">
+    <input type="date" asp-for="PublishDate">
+    <button type="submit">Save</button>
+</form>
+<a href="Post/Index">Back to List</a>
